@@ -1,7 +1,7 @@
 # Implementation & Deployment Plan: Cash Advance (Non-Travel) Fetch/Sync & Auto-Heal Setup
 
-> **Status**: Ready for User Review (`c:\Users\User.MIS\Documents\Cash Advance (Non-Travel)`)  
-> **Live Non-Modification Guarantee**: No live changes have been made to Lark Base (`ZMxobOBv0aW8AosmOhflq4IagBe`), Lark App (`cli_aa74f7f23ab8df04`), Lark AnyCross (`7709705859911143183`), Cloudflare Workers, or GitHub (`markwlsn/cash-advance-non-travel`). All code, schema migration scripts, and local simulated tests (92/92 passing) are prepared locally for review prior to live execution.
+> **Status**: Deployed & Verified in Production (`c:\Users\User.MIS\Documents\Cash Advance (Non-Travel)`)  
+> **Production Architecture**: Enforces strict 1-to-1 parity with **Liquidation (Non-Travel)** — Lark AnyCross (`7709705859911143183` / `7709746437629710091`) serves strictly as the **Creation Trigger ONLY** (`Instance status = Pending`), while Cloudflare Worker `cash-advance-non-travel` on Account `98aa9b41c7867464e61d89b0d86cf59b` (`https://cash-advance-non-travel.markwlsn.workers.dev`) handles all stage sync and financial field auto-healing via its 1-minute Cron Trigger (`* * * * *`).
 
 ---
 
@@ -16,8 +16,8 @@ This setup replicates the production **Liquidation (Non-Travel)** architecture (
 | **Table 2 (Step Log)** | `tbl9kYdGsLsPQzB6` (47 fields, native types) | `tbliGywXHe6qMIm6` (`vewYFHTdcL`, 46 $\rightarrow$ 47 fields) | 8-stage SLA approval log (`Approver`, `Start`, `End`, `Duration`, `Action`) + `Overall Status` |
 | **Approval Definition** | `19715E22-9CC7-4F81-B1F6-2FE7B2C1FA0B` | `D375F005-FCC9-4AA7-8B03-683AA17F4997` | `Cash Advance Form (Non-Travel)` (Admin ID `7690379670504460009`) |
 | **Dedicated Lark Bot** | `cli_aa795f5a66b89f1d` (`Liquidation (Non-Travel)`) | `cli_aa74f7f23ab8df04` (`Cash Advance NT Bot`) | Dedicated OpenAPI credentials & `approval_instance` v1.0 event forwarder |
-| **Lark AnyCross** | Project `7706752931566980882` / Flow `7706817672578600716` | Project `7709705859911143183` (`Cash Advance NT`) | Real-time create trigger (`status = PENDING` $\rightarrow$ `HTTP Client` v1.7 `GET /sync`) |
-| **Cloudflare Worker** | `liquidation-non-travel-watchdog` | `cash-advance-non-travel-watchdog` | Instant `/sync` webhook handler (`ctx.waitUntil`) + 1-min cron (`* * * * *`) auto-heal engine |
+| **Lark AnyCross** | Project `7706752931566980882` / Flow `7706817672578600716` | Project `7709705859911143183` / Flow `7709746437629710091` | Real-time create trigger ONLY (`status = PENDING` $\rightarrow$ `HTTP Client` v1.7 `GET /sync`) |
+| **Cloudflare Worker** | `liquidation-non-travel-watchdog` | `cash-advance-non-travel` (`98aa9b41c7867464e61d89b0d86cf59b`) | Instant `/sync` webhook handler (`ctx.waitUntil`) + 1-min cron (`* * * * *`) auto-heal engine (`https://cash-advance-non-travel.markwlsn.workers.dev`) |
 | **GitHub Repository** | `markwlsn/Liquidation-Non-Travel-watchdog-` | `markwlsn/cash-advance-non-travel` | Source control & GitHub Actions Node 20 CI |
 
 ---
@@ -160,7 +160,7 @@ Mirrors reference AnyCross workflow `7706817672578600716` (`Liquidation (Non-Tra
      - Connector: `HTTP Client` v1.7 (`connectorId: "7327606926668267526"`)
      - Action: `GET Method` (`operationId: "7327606926726938630"`)
      - Parameters:
-       - `url`: **`https://cash-advance-non-travel-watchdog.markwilsongeronilla01.workers.dev/sync`**
+       - `url`: **`https://cash-advance-non-travel.markwlsn.workers.dev/sync`**
        - `response_parser`: **`none`**
        - `response_encoding_format`: **`UTF8`** (`utf8`)
        - `is_response_contain_file` (Response Includes File): **`No` (`false`)** *(mandatory: prevents AnyCross `Error: 1` validation failure)*
@@ -182,7 +182,7 @@ Mirrors reference AnyCross workflow `7706817672578600716` (`Liquidation (Non-Tra
 4. *(Optional)* Delete the 5 blank placeholder rows (`reczz28bLjXIyY9k`, `reczz28bLjXIzcqF`, `reczz28bLjXIzK48`, `reczz28bLjXIyEC1`, `reczz28bLjXIyelm`) in `tbliGywXHe6qMIm6` (note: `cloudflare_worker.js` safely ignores rows with null `Approval Instance Code` even if left in place).
 5. Run `python inspect_fields.py` to confirm all 47 columns in `tbliGywXHe6qMIm6` have their target types (`1005`, `1`, `15`, `3`, `11`, `5`, `20`) and zero `(!)` icons appear in the Lark Base UI.
 
-### Step 2: Deploy Cloudflare Worker (`cash-advance-non-travel-watchdog`)
+### Step 2: Deploy Cloudflare Worker (`cash-advance-non-travel` on Account `98aa9b41c7867464e61d89b0d86cf59b`)
 1. Set the worker secret and deploy from `c:\Users\User.MIS\Documents\Cash Advance (Non-Travel)`:
    ```powershell
    npx wrangler secret put LARK_APP_SECRET
@@ -190,8 +190,8 @@ Mirrors reference AnyCross workflow `7706817672578600716` (`Liquidation (Non-Tra
    ```
 2. Verify `/health` and initial `/sync` (which will backfill existing record `reczz28bLguiEPFR` / `202609280009` into Table 2):
    ```powershell
-   curl https://cash-advance-non-travel-watchdog.markwilsongeronilla01.workers.dev/health
-   curl https://cash-advance-non-travel-watchdog.markwilsongeronilla01.workers.dev/sync
+   curl https://cash-advance-non-travel.markwlsn.workers.dev/health
+   curl https://cash-advance-non-travel.markwlsn.workers.dev/sync
    ```
 
 ### Step 3: Configure AnyCross (`7709705859911143183`) & Lark App (`cli_aa74f7f23ab8df04`)
@@ -236,7 +236,7 @@ Mirrors reference AnyCross workflow `7706817672578600716` (`Liquidation (Non-Tra
 3. **Verify AnyCross Create Trigger (`7709705859911143183`)**:
    - In AnyCross $\rightarrow$ Execution Logs, verify a new execution triggered on `status = PENDING` and `HTTP Client` (`GET /sync`) succeeded with HTTP `200` (`{"code":0,"msg":"Sync job scheduled"}`) in $< 2\text{s}$.
 4. **Verify Cloudflare Worker & Table 2 (`tbliGywXHe6qMIm6`) Auto-Heal**:
-   - Check `GET https://cash-advance-non-travel-watchdog.markwilsongeronilla01.workers.dev/health` and confirm `webhooksReceived` and `instancesCreated` incremented.
+   - Check `GET https://cash-advance-non-travel.markwlsn.workers.dev/health` and confirm `webhooksReceived` and `instancesCreated` incremented.
    - In Table 2 (`tbliGywXHe6qMIm6`), confirm the new test row appears within seconds with:
      - `Approval Instance Code` (decoded GUID), `Request No`, `SourceID`
      - `Task ID` (clickable native URL), `Requester` (native User chip)

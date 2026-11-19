@@ -1,4 +1,5 @@
-name = "cash-advance-non-travel-watchdog"
+name = "cash-advance-non-travel"
+account_id = "98aa9b41c7867464e61d89b0d86cf59b"
 main = "cloudflare_worker.js"
 compatibility_date = "2024-11-01"
 

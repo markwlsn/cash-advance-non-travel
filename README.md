@@ -41,7 +41,7 @@ flowchart TD
 | **Architecture** | **Strict 2-Table** | Enforced 2-table model mirroring Liquidation (Non-Travel) (`tblaIarx3eSshV6N` / `tbl9kYdGsLsPQzB6`) |
 | **Approval Definition Code** | `D375F005-FCC9-4AA7-8B03-683AA17F4997` | `Cash Advance Form (Non-Travel)` (Admin ID `7690379670504460009`) |
 | **Dedicated Bot App ID** | `cli_aa74f7f23ab8df04` | `Cash Advance NT Bot` (Dedicated enterprise bot isolated from sibling workflows) |
-| **Cloudflare Worker** | `cash-advance-non-travel-watchdog` | Serverless Edge Watchdog (`https://cash-advance-non-travel-watchdog.markwilsongeronilla01.workers.dev/`) |
+| **Cloudflare Worker** | `cash-advance-non-travel` | Serverless Edge Watchdog (`https://cash-advance-non-travel.markwlsn.workers.dev/`, Account `98aa9b41c7867464e61d89b0d86cf59b`) |
 | **Lark AnyCross Project** | `7709705859911143183` | `Cash Advance NT` (`Cash Advance (Non-Travel) Real-Time Ingestion`) |
 | **GitHub Repository** | `markwlsn/cash-advance-non-travel` | Source control & automated GitHub Actions CI (`https://github.com/markwlsn/cash-advance-non-travel`) |
 
@@ -102,8 +102,8 @@ python configure_table2_schema.py
 
 ### Health Check & Manual Sync (After Cloudflare Deployment):
 ```bash
-curl https://cash-advance-non-travel-watchdog.markwilsongeronilla01.workers.dev/health
-curl https://cash-advance-non-travel-watchdog.markwilsongeronilla01.workers.dev/sync
+curl https://cash-advance-non-travel.markwlsn.workers.dev/health
+curl https://cash-advance-non-travel.markwlsn.workers.dev/sync
 ```
 
 See [DEPLOYMENT_PLAN.md](file:///c:/Users/User.MIS/Documents/Cash%20Advance%20(Non-Travel)/DEPLOYMENT_PLAN.md) for the complete 1-to-1 field parity matrix, AnyCross & Lark App configuration instructions, ordered rollout steps, and live E2E test-record verification procedure.
