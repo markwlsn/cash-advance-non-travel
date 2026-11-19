@@ -1,0 +1,19 @@
+{
+  "name": "cash-advance-non-travel-watchdog",
+  "version": "1.0.0",
+  "description": "Lark Cash Advance (Non-Travel) Real-Time Approval Sync & SLA Watchdog",
+  "type": "module",
+  "main": "cloudflare_worker.js",
+  "scripts": {
+    "test": "node test_cloudflare_worker_logic.js"
+  },
+  "keywords": [
+    "lark",
+    "cloudflare-workers",
+    "sla",
+    "watchdog",
+    "cash-advance"
+  ],
+  "author": "Mark Wilson Geronilla <markwilsongeronilla01@gmail.com>",
+  "license": "MIT"
+}

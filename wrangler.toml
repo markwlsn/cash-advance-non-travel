@@ -1,0 +1,14 @@
+name = "cash-advance-non-travel-watchdog"
+main = "cloudflare_worker.js"
+compatibility_date = "2024-11-01"
+
+[triggers]
+crons = ["* * * * *"] # 1-minute autonomous safety net
+
+[vars]
+LARK_APP_ID = "cli_aa74f7f23ab8df04"
+LARK_BASE_TOKEN = "ZMxobOBv0aW8AosmOhflq4IagBe"
+LARK_MAIN_TABLE_ID = "tblIbyc67hpYTyiI"
+LARK_LOG_TABLE_ID = "tbliGywXHe6qMIm6"
+LARK_APPROVAL_CODE = "D375F005-FCC9-4AA7-8B03-683AA17F4997"
+# Note: LARK_APP_SECRET is provisioned securely via `npx wrangler secret put LARK_APP_SECRET`
