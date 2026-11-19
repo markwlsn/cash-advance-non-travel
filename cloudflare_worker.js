@@ -755,7 +755,7 @@ export default {
         JSON.stringify(
           {
             status: 'healthy',
-            service: 'cash-advance-non-travel-watchdog',
+            service: 'cash-advance-non-travel',
             version: '1.0.0',
             metrics: serviceMetrics,
             cachedToken: !!tokenCache.token,

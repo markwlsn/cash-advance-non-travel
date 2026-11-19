@@ -605,18 +605,18 @@ try {
   globalThis.fetch = mf7;
 
   // Test GET /health
-  const healthRes = await worker.fetch(new Request('https://cash-advance-non-travel-watchdog.workers.dev/health'), env7, {});
+  const healthRes = await worker.fetch(new Request('https://cash-advance-non-travel.markwlsn.workers.dev/health'), env7, {});
   const healthJson = await healthRes.json();
   assert(
     healthRes.status === 200 &&
       healthJson.status === 'healthy' &&
-      healthJson.service === 'cash-advance-non-travel-watchdog',
-    'GET /health returns 200 healthy JSON for cash-advance-non-travel-watchdog'
+      healthJson.service === 'cash-advance-non-travel',
+    'GET /health returns 200 healthy JSON for cash-advance-non-travel'
   );
 
   // Test GET /unknown -> 404
   const notFoundRes = await worker.fetch(
-    new Request('https://cash-advance-non-travel-watchdog.workers.dev/unknown'),
+    new Request('https://cash-advance-non-travel.markwlsn.workers.dev/unknown'),
     env7,
     {}
   );
@@ -624,7 +624,7 @@ try {
 
   // Test DELETE /sync -> 405
   const methodRes = await worker.fetch(
-    new Request('https://cash-advance-non-travel-watchdog.workers.dev/sync', { method: 'DELETE' }),
+    new Request('https://cash-advance-non-travel.markwlsn.workers.dev/sync', { method: 'DELETE' }),
     env7,
     {}
   );
@@ -639,7 +639,7 @@ try {
   };
   const beforeWebhooks = serviceMetrics.webhooksReceived;
   const syncRes = await worker.fetch(
-    new Request('https://cash-advance-non-travel-watchdog.workers.dev/sync', { method: 'GET' }),
+    new Request('https://cash-advance-non-travel.markwlsn.workers.dev/sync', { method: 'GET' }),
     env7,
     mockCtx
   );
@@ -657,7 +657,7 @@ try {
   assert(s7.authCalls === 1, 'First cycle fetches tenant_access_token once');
 
   // Second GET /sync reuses cached token
-  await worker.fetch(new Request('https://cash-advance-non-travel-watchdog.workers.dev/sync'), env7, mockCtx);
+  await worker.fetch(new Request('https://cash-advance-non-travel.markwlsn.workers.dev/sync'), env7, mockCtx);
   await Promise.all(waitUntilPromises);
   assert(s7.authCalls === 1, 'Second cycle reuses cached tenant_access_token (0 additional auth subrequests)');
 
