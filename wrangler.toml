@@ -1,5 +1,5 @@
 name = "cash-advance-non-travel"
-account_id = "replace_with_cloudflare_account_id"
+account_id = "98aa9b41c7867464e61d89b0d86cf59b"
 main = "cloudflare_worker.js"
 compatibility_date = "2024-11-01"
 
@@ -7,9 +7,9 @@ compatibility_date = "2024-11-01"
 crons = ["* * * * *"] # 1-minute autonomous safety net
 
 [vars]
-LARK_APP_ID = "replace_with_lark_app_id"
-LARK_BASE_TOKEN = "replace_with_lark_base_token"
-LARK_MAIN_TABLE_ID = "replace_with_lark_main_table_id"
-LARK_LOG_TABLE_ID = "replace_with_lark_log_table_id"
-LARK_APPROVAL_CODE = "replace_with_lark_approval_code"
+LARK_APP_ID = "cli_aa74f7f23ab8df04"
+LARK_BASE_TOKEN = "ZMxobOBv0aW8AosmOhflq4IagBe"
+LARK_MAIN_TABLE_ID = "tblIbyc67hpYTyiI"
+LARK_LOG_TABLE_ID = "tbliGywXHe6qMIm6"
+LARK_APPROVAL_CODE = "D375F005-FCC9-4AA7-8B03-683AA17F4997"
 # Note: LARK_APP_SECRET is provisioned securely via `npx wrangler secret put LARK_APP_SECRET`
